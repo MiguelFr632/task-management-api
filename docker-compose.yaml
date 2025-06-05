@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  postgres_db:
+    container_name: postgres_db
+    image: bitnami/postgresql:latest
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRESQL_USERNAME: postgres
+      POSTGRESQL_PASSWORD: '@SpaceMonkeys2025'
+      POSTGRESQL_DATABASE: postgres
+      POSTGRESQL_TIMEZONE: 'America/Sao_Paulo'
+      TZ: America/Sao_Paulo
+    networks:
+      - common_network
+    volumes:
+      - common_postgres_data:/bitnami/postgresql
+      - ./init-scripts:/docker-entrypoint-initdb.d:ro
+    stdin_open: true
+    tty: true
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-d', 'postgres', '-U', 'postgres']
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    restart: always
